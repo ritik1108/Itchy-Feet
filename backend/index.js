@@ -10,33 +10,34 @@ import reviewRoute from './routes/reviews.js';
 import bookingRoute from './routes/bookings.js';
 // import paymentRoute from './routes/stripeBook.js';
 
-
-dotenv.config()
-const app = express()
+dotenv.config();
+const app = express();
 const port = process.env.PORT || 8000;
 const corsOptions = {
-    origin: true,
-    credentials: true 
-}
-// connect to db
-mongoose.set("strictQuery", false);
-const connect = async () => {
-    try{
-        await mongoose.connect(process.env.MONGO_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        })
-        console.log('MongoDB connected');
-    } catch (err) {
-        console.log('MongoDB connection failed', err);
-    }
-}
+  origin: true,
+  credentials: true,
+};
 
+// connect to db
+mongoose.set('strictQuery', false);
+const connect = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✅ MongoDB connected');
+  } catch (err) {
+    console.log('❌ MongoDB connection failed:', err);
+  }
+};
 
 // middleware
-app.use(express.json())
-app.use(cors(corsOptions))
+app.use(express.json());
+app.use(cors(corsOptions));
 app.use(cookieParser());
+
+// routes
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/tours', tourRoute);
 app.use('/api/v1/users', userRoute);
@@ -44,8 +45,13 @@ app.use('/api/v1/review', reviewRoute);
 app.use('/api/v1/booking', bookingRoute);
 // app.use('/api/v1/payments', paymentRoute);
 
-app.listen(port, () =>{
-    connect();
-    console.log('server listening on port', port);
+// ✅ Root route (for Render)
+app.get('/', (req, res) => {
+  res.send('🌍 Tour Booking API is running successfully on Render!');
+});
 
+// server
+app.listen(port, () => {
+  connect();
+  console.log(`🚀 Server listening on port ${port}`);
 });
